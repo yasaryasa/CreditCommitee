@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNet.Identity
+<div class="row border-bottom">
+    <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+
+        @if (Request.IsAuthenticated)
+        {
+            <div class="navbar-header">
+                <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+            </div>
+            using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+            {
+                @Html.AntiForgeryToken()
+
+
+
+                <ul class="nav navbar-top-links navbar-right pull-right">
+                    <li>
+                        @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
+                    </li>
+                    <li><a href="javascript:document.getElementById('logoutForm').submit()"><i class="fa fa-sign-out"></i>Log off</a></li>
+                </ul>
+            }
+
+        }
+        else
+        {
+            <div class="navbar-header">
+                <img src="/Images/UniCredit-Bank.png.png" class="img-responsive center-block" style="margin: 15px 0 0 25px;">
+            </div>
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <a href="@Url.Action("Login", "Account")" class="btn btn-outline" style="color: #1ab394 !important;">
+                        <i class="fa fa-sign-in"></i> Log in
+                    </a>
+                </li>
+            </ul>
+        }
+    </nav>
+</div>

@@ -1,0 +1,296 @@
+﻿@model IEnumerable<Commitee.Models.CommiteeItem>
+
+@{
+    ViewBag.Title = "List";
+    bool started = false;
+}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox-title" style="border-bottom: 1px solid #e7eaec;">
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="mail-tools tooltip-demo m-t-md" style="margin:2px 0 10px 0">
+
+                        <div class="btn-group pull-right">
+                            <div class="btn sk-spinner sk-spinner-three-bounce" id="spinner" style="visibility:hidden;">
+                                <div class="sk-bounce1"></div>
+                                <div class="sk-bounce2"></div>
+                                <div class="sk-bounce3"></div>
+                            </div>
+                            <a href="@Url.Action("Index", "CommiteeProgrammes")" class="btn btn-danger btn-sm btn-outline" data-toggle="tooltip" data-placement="top" title="Back to Programmes" style="margin-left: 10px;">
+                                <i class="fa fa-arrow-left"></i>
+                                Back
+                            </a>
+                        </div>
+                        <a href="@Url.Action("Create", "CommiteeItems")" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="New Case">
+                            <i class="fa fa-plus"></i>
+                            <span>
+                                <strong>New Case</strong>
+                            </span>
+                        </a>
+                        @*<button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i> </button>
+                            <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as important"><i class="fa fa-exclamation"></i> </button>
+                            <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>*@
+                    </div>
+                }
+                else
+                {
+                    <div class="row" style="padding:0 10px 0 10px">
+                        @if (@ViewBag.CommiteeProgramme != null)
+                        {
+                            <h3 class="pull-left">Tasks <small>of</small> @ViewBag.CommiteeProgramme.programmeName</h3>
+
+                            @*<div class="m-b-xs pull-right">
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <button class="btn btn-sm btn-primary" id="btnAll">All</button>
+                                    <button class="btn btn-sm btn-white">Started</button>
+                                    <button class="btn btn-sm btn-white">Ended</button>
+                                </div>
+                            </div>*@
+                        }
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            @*<div class="btn-group pull-right">
+                                    <a href="@Url.Action("Login", "Account")" class="btn btn-primary btn-sm btn-outline" data-toggle="tooltip" data-placement="top" title="Login" style="margin-left: 10px;">
+                                        <i class="fa fa-sign-in"></i>
+                                        Login
+                                    </a>
+                                </div>*@
+
+
+                        }
+                    </div>
+                }
+            </div>
+            <div class="mail-box project-list">
+                @if (ViewBag.ErrorMsg != null)
+                {
+                    <div class="ibox-content ibox-heading" style="background-color: #f2dede;">
+                        <h3>@ViewBag.ErrorMsg.summary</h3>
+                        <small><i class="fa fa-phone"></i> @ViewBag.ErrorMsg.detail</small>
+                    </div>
+                }
+                @*@Html.ValidationSummary(false, "", new { @class = "alert alert-danger alert-dismissible" })*@
+                <table class="table table-responsive table-mail" id="commiteeItemsTable">
+                    <tbody class="rm-data">
+                        @if (Model != null && Model.Count() > 0)
+                        {
+
+                            foreach (var item in Model)
+                            {
+                                var dynamicClass = "";
+                                var dynamicDisable = "";
+                                var dynamicText = "";
+                                @*<tr @(item.itemStatus.ToString().Equals("NOT_STARTED") ? "class=danger" : String.Empty)>*@
+
+                                switch (item.itemStatus)
+                                {
+                                    case Commitee.Models.CommiteeItem.ItemStatus.NOT_STARTED:
+                                        dynamicClass = "info";
+                                        break;
+                                    case Commitee.Models.CommiteeItem.ItemStatus.STARTED:
+                                        dynamicClass = "warning";
+                                        started = true;
+                                        break;
+                                    case Commitee.Models.CommiteeItem.ItemStatus.ENDED:
+                                        dynamicClass = "success";
+                                        dynamicDisable = "disabled";
+                                        dynamicText = "todo-completed";
+                                        break;
+                                    default:
+                                        dynamicClass = "";
+                                        break;
+                                }
+
+                                <tr class="@dynamicClass" id="@item.id">
+                                    <td class="check-mail">
+                                        @*<input type="checkbox" class="i-checks">*@
+                                        @Html.HiddenFor(model => item.itemStatus, new { Value = item.itemStatus })
+                                    </td>
+                                    <td class="project-title">
+                                        <a href='@Url.Action("Details", "CommiteeItems", new { id = item.id })'> <strong class="@dynamicText"> @item.itemName</strong></a>
+                                        <br />
+                                        @if (item.itemStartDate == null)
+                                        {
+                                            <small> --/-- </small>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted"> @item.itemStartDate </small>
+                                        }
+                                    </td>
+                                    @*<td class="project-completion col-lg-2 hidden-xs">
+                                            <small>During: </small>
+                                            <div class="progress progress-mini">
+                                                <div style="width: 48%;" class="progress-bar"></div>
+                                            </div>
+                                        </td>*@
+                                    <td class="hidden-xs">
+                                        <span class="label label-primary btn-outline">Started at :</span>
+                                        <br />
+                                        @if (item.itemStartDate == null)
+                                        {
+                                            <small> --/-- </small>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted"> @item.itemStartDate </small>
+                                        }
+                                    </td>
+                                    <td class="hidden-xs">
+                                        <span class="label label-danger btn-outline">Ended at :</span>
+                                        <br />
+                                        @if (item.itemEndDate == null)
+                                        {
+                                            <small> --/-- </small>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted"> @item.itemEndDate </small>
+                                        }
+                                    </td>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <td class="text-right">
+                                            <div class="btn-group">
+                                                @if (item.itemStatus == Commitee.Models.CommiteeItem.ItemStatus.NOT_STARTED)
+                                                {
+                                                    <a href='@Url.Action("ChangeTaskStatus", "CommiteeItems", new { id = item.id, status = Commitee.Models.CommiteeItem.ItemStatus.STARTED })' class="btn btn-primary btn-sm"><i class="fa fa-play"></i> Start </a>
+                                                }
+                                                else if (item.itemStatus == Commitee.Models.CommiteeItem.ItemStatus.STARTED)
+                                                {
+                                                    <a href='@Url.Action("ChangeTaskStatus", "CommiteeItems", new { id = item.id, status = Commitee.Models.CommiteeItem.ItemStatus.ENDED })' class="btn btn-danger btn-sm"><i class="fa fa-stop"></i> Stop </a>
+                                                }
+                                                else if (item.itemStatus == Commitee.Models.CommiteeItem.ItemStatus.ENDED)
+                                                {
+                                                    <a href='#' class="btn btn-primary btn-sm disabled"><i class="fa fa-play"></i> Ended </a>
+                                                }
+                                                <fieldset class="btn-group" @dynamicDisable>
+                                                    <a href="#" data-toggle="dropdown" class="btn btn-success btn-sm dropdown-toggle">
+                                                        <i class="fa fa-list"></i>
+                                                        <span>
+                                                            <strong>Actions</strong>
+                                                        </span>
+                                                    </a>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a href='@Url.Action("Details", "CommiteeItems", new { id = item.id })'><i class="fa fa-th-list"></i> Details </a>
+                                                        </li>
+                                                        <li class="divider"></li>
+                                                        <li>
+                                                            <a href='@Url.Action("Edit", "CommiteeItems", new { id = item.id })'><i class="fa fa-edit"></i> Edit </a>
+                                                        </li>
+                                                        <li class="divider"></li>
+                                                        <li>
+                                                            <a href='@Url.Action("Delete", "CommiteeItems", new { id = item.id })'><i class="fa fa-trash"></i> Delete </a>
+                                                        </li>
+                                                    </ul>
+                                                </fieldset>
+                                            </div>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+}
+<script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+@section Scripts {
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/plugins/isotope")
+    @Scripts.Render("~/bundles/inspinia")
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            setInterval(function () {
+                location.reload(true);
+            }, 30000);
+
+            $(".btn-group > .btn").click(function () {
+                $(".btn-group > .btn").removeClass("btn-primary");
+                $(".btn-group > .btn").addClass("btn-white");
+                $(this).removeClass("btn-white");
+                $(this).addClass("btn-primary");
+                //alert(this.id);
+            });
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+            var userRole = '@(User.IsInRole("Admin") ? "true" : "false")';
+            if (userRole === "true") {
+                $('table tbody').sortable({
+                    helper: fixWidthHelper,
+                    revert: 400,
+                    stop: function (event, ui) {
+                        var items = [];
+                        for (var i = 0; i < event.target.children.length; i++) {
+                            var item = {
+                                id: event.target.children[i].id,
+                                itemOrder: i
+                            };
+                            items.push(item);
+                        }
+                        changeVisibility();
+                        $.ajax({
+                            url: '/CommiteeItems/OgrenciyiGetir/',
+                            type: 'POST',
+                            contentType: "application/json",
+                            data: JSON.stringify({ commiteeItems: items }),
+                            success: function (data) {
+                                changeVisibility();
+                            },
+                            error: function (hata, ajaxOptions, thrownError) {
+                                alert(hata.status);
+                                alert(thrownError);
+                                alert(hata.responseText);
+                                changeVisibility();
+                            }
+                        });
+                    }
+                }).disableSelection();
+            }
+            function fixWidthHelper(e, ui) {
+                ui.children().each(function () {
+                    $(this).width($(this).width());
+                });
+                return ui;
+            }
+
+            function changeVisibility() {
+                if ($('#spinner').css('visibility') == 'hidden')
+                    $('#spinner').css('visibility', 'visible');
+                else
+                    $('#spinner').css('visibility', 'hidden');
+            }
+            //$("#sortable").disableSelection();
+        });
+
+
+        $(window).on("load", function () {
+            $('html, body').animate({ scrollTop: $('tr.warning').offset().top }, '50');
+
+            //var $container = $('.rm-data').isotope({
+            //    // options
+            //});
+
+            //$("#btnAll").click(function () {
+            //    $container.isotope({ filter: "tr:contains(info)" });
+            //});
+        });
+    </script>
+}

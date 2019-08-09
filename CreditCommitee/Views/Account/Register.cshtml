@@ -1,0 +1,43 @@
+﻿@model CreditCommitee.ViewModels.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<div class="loginColumns animated fadeInDown">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-2">
+            <div class="ibox-content">
+                <img src="~/Images/UniCredit-Bank.png.png" class="img-responsive center-block" />
+                @using (Html.BeginForm("Register", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "m-t", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary("", new { @class = "text-danger" })
+                    
+                    <div class="form-group">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "E-Mail" })
+                        @Html.ValidationMessageFor(m => m.Email)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password" })
+                        @Html.ValidationMessageFor(m => m.Password)
+                    </div>
+                    <div class="form-group">
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Confirm Password" })
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword)
+                    </div>
+                    <button type="submit" class="btn btn-primary block full-width m-b">Register</button>
+
+                    <p class="text-muted text-center">
+                        <small>Already have an account?</small>
+                    </p>
+                    <a href='@Url.Action("Login", "Account")' class="btn btn-sm btn-white btn-block">Login</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = "Programme Items Duration";
+}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Programme Items Duration</h5>
+                </div>
+                <div class="ibox-content">
+                    <div>
+                        <canvas id="barChart" height="140"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/plugins/chartJs")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            //var myNewChart = new Chart(ctx).Line(lineData, lineOptions);
+
+            var barData = {
+                labels:  @Html.Raw(Json.Encode(ViewBag.ITEM_NAMES)),
+                datasets: [
+                    {
+                        label: "Commitee Programme Items",
+                        fillColor: "rgba(54, 162, 235, 0.8)",
+                        backgroundColor: "rgba(54, 162, 235, 0.8)",
+                        strokeColor: "rgba(54, 162, 235, 1)",
+                        data: @Html.Raw(Json.Encode(ViewBag.ITEM_DATAS))
+                    }
+                ]
+            };
+
+            var barOptions =  {
+                scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                }
+            }
+            Chart.defaults.global.defaultColor = 'rgba(54, 162, 235, 0.8)';
+            var ctx = document.getElementById("barChart").getContext("2d");
+            var myNewChart = new Chart(ctx, {
+                type: "bar",
+                data: barData,
+                options: barOptions
+            });
+
+        });
+    </script>
+}
+
+
+
+
+

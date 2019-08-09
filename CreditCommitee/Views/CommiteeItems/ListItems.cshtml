@@ -1,0 +1,188 @@
+﻿@model IEnumerable<Commitee.Models.CommiteeItem>
+
+@{
+    ViewBag.Title = "List";
+    bool started = false;
+}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="mail-box-header">
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="mail-tools tooltip-demo m-t-md" style="margin-top:-10px">
+                        <div class="btn-group pull-right">
+                            <a href="@Url.Action("Index", "CommiteeProgrammes")" class="btn btn-danger btn-sm btn-outline" data-toggle="tooltip" data-placement="top" title="Back to Programmes">
+                                <i class="fa fa-arrow-left"></i>
+                                Back
+                            </a>
+                        </div>
+                        <a href="@Url.Action("ProgrammeItems", "CommiteeItems", new { id = @ViewBag.CommiteeProgramme.id})" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="top" title="Charts">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <span>
+                                <strong>Charts</strong>
+                            </span>
+                        </a>
+                        @*<button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i> </button>
+                            <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as important"><i class="fa fa-exclamation"></i> </button>
+                            <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>*@
+                    </div>
+                }
+                else
+                {
+                    <h3>Tasks <small>of</small> @ViewBag.CommiteeProgramme.programmeName</h3>
+                }
+            </div>
+            <div class="mail-box project-list">
+                @if (ViewBag.ErrorMsg != null)
+                {
+                    <div class="ibox-content ibox-heading" style="background-color: #f2dede;">
+                        <h3>@ViewBag.ErrorMsg.summary</h3>
+                        <small><i class="fa fa-phone"></i> @ViewBag.ErrorMsg.detail</small>
+                    </div>
+                }
+
+                @*@Html.ValidationSummary(false, "", new { @class = "alert alert-danger alert-dismissible" })*@
+                <table class="table table-responsive table-mail">
+                    <tbody>
+                        @if (Model != null && Model.Count() > 0)
+                        {
+
+                            foreach (var item in Model)
+                            {
+                                var dynamicClass = "";
+                                var dynamicDisable = "";
+                                @*<tr @(item.itemStatus.ToString().Equals("NOT_STARTED") ? "class=danger" : String.Empty)>*@
+
+                                switch (item.itemStatus)
+                                {
+                                    case Commitee.Models.CommiteeItem.ItemStatus.NOT_STARTED:
+                                        dynamicClass = "info";
+                                        break;
+                                    case Commitee.Models.CommiteeItem.ItemStatus.STARTED:
+                                        dynamicClass = "warning";
+                                        started = true;
+                                        break;
+                                    case Commitee.Models.CommiteeItem.ItemStatus.ENDED:
+                                        dynamicClass = "success";
+                                        dynamicDisable = "disabled";
+                                        break;
+                                    default:
+                                        dynamicClass = "";
+                                        break;
+                                }
+
+                                <tr class="@dynamicClass">
+                                    <td class="check-mail">
+                                        @*<input type="checkbox" class="i-checks">*@
+                                    </td>
+                                    <td class="project-title">
+                                        <a href='@Url.Action("Details", "CommiteeItems", new { id = item.id })'> <strong> @item.itemName</strong></a>
+                                        <br />
+                                        @if (item.itemStartDate == null)
+                                        {
+                                            <small> --/-- </small>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted"> @item.itemStartDate </small>
+                                        }
+                                    </td>
+                                    @*<td class="project-completion col-lg-2 hidden-xs">
+                                            <small>During: </small>
+                                            <div class="progress progress-mini">
+                                                <div style="width: 48%;" class="progress-bar"></div>
+                                            </div>
+                                        </td>*@
+                                    <td class="hidden-xs">
+                                        <span class="label label-primary btn-outline">Started at :</span>
+                                        <br />
+                                        @if (item.itemStartDate == null)
+                                        {
+                                            <small> --/-- </small>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted"> @item.itemStartDate </small>
+                                        }
+                                    </td>
+                                    <td class="hidden-xs">
+                                        <span class="label label-danger btn-outline">Ended at :</span>
+                                        <br />
+                                        @if (item.itemEndDate == null)
+                                        {
+                                            <small> --/-- </small>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted"> @item.itemEndDate </small>
+                                        }
+                                    </td>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <td class="text-right">
+                                            <div class="btn-group">
+                                                @if (item.itemStatus == Commitee.Models.CommiteeItem.ItemStatus.NOT_STARTED)
+                                                {
+                                                    <a href='@Url.Action("ChangeTaskStatus", "CommiteeItems", new { id = item.id, status = Commitee.Models.CommiteeItem.ItemStatus.STARTED })' class="btn btn-primary btn-sm"><i class="fa fa-play"></i> Start </a>
+                                                }
+                                                else if (item.itemStatus == Commitee.Models.CommiteeItem.ItemStatus.STARTED)
+                                                {
+                                                    <a href='@Url.Action("ChangeTaskStatus", "CommiteeItems", new { id = item.id, status = Commitee.Models.CommiteeItem.ItemStatus.ENDED })' class="btn btn-danger btn-sm"><i class="fa fa-stop"></i> Stop </a>
+                                                }
+                                                else if (item.itemStatus == Commitee.Models.CommiteeItem.ItemStatus.ENDED)
+                                                {
+                                                    <a href='#' class="btn btn-primary btn-sm disabled"><i class="fa fa-play"></i> Ended </a>
+                                                }
+                                                <fieldset class="btn-group" @dynamicDisable>
+                                                    <a href="#" data-toggle="dropdown" class="btn btn-success btn-sm dropdown-toggle">
+                                                        <i class="fa fa-list"></i>
+                                                        <span>
+                                                            <strong>Actions</strong>
+                                                        </span>
+                                                    </a>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a href='@Url.Action("Details", "CommiteeItems", new { id = item.id })'><i class="fa fa-th-list"></i> Details </a>
+                                                        </li>
+                                                        <li class="divider"></li>
+                                                        <li>
+                                                            <a href='@Url.Action("Edit", "CommiteeItems", new { id = item.id })'><i class="fa fa-edit"></i> Edit </a>
+                                                        </li>
+                                                        <li class="divider"></li>
+                                                        <li>
+                                                            <a href='@Url.Action("Delete", "CommiteeItems", new { id = item.id })'><i class="fa fa-trash"></i> Delete </a>
+                                                        </li>
+                                                    </ul>
+                                                </fieldset>
+                                            </div>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+}
+@section Scripts {
+    @Scripts.Render("~/plugins/iCheck")
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+        });
+    </script>
+}

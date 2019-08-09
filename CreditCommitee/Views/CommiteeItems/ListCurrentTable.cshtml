@@ -1,0 +1,113 @@
+﻿@model IEnumerable<CreditCommitee.Models.CommiteeItem>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2>Index</h2>
+        <ol class="breadcrumb">
+            <li class="active">
+                <strong>CommiteeItem</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+
+
+@{
+    ViewBag.Title = "Projects";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2>Commitee Task List</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Home")">Home</a>
+            </li>
+            <li class="active">
+                <strong>Commitee Task List</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="wrapper wrapper-content animated fadeInUp">
+            <div class="mail-box-header">
+                <form method="get" action="#" class="pull-right mail-search">
+                    <div class="input-group">
+                        <input type="text" class="form-control input-sm" name="search" placeholder="Search email">
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <h2>
+                    Commitee Task List
+                </h2>
+                <div class="mail-tools tooltip-demo m-t-md">
+                    <div class="btn-group pull-right">
+                        @*<button class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i></button>
+                        <button class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i></button>*@
+                        @Html.ActionLink("Create New Task", "Create", null, new { @class = "btn btn-primary btn-xs" })
+                    </div>
+                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</button>
+                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i> </button>
+                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as important"><i class="fa fa-exclamation"></i> </button>
+                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>
+                </div>
+            </div>
+            <div class="mail-box">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="project-list">
+                            <table class="table table-hover">
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="project-status">
+                                                <span class="label label-primary">Active</span>
+                                            </td>
+                                            <td class="project-title">
+                                                <a href="@Url.Action("ProjectDetail", "AppViews")">@item.itemName</a>
+                                                <br />
+                                                <small>Created 14.08.2014</small>
+                                            </td>
+                                            <td class="project-completion">
+                                                <small>Completion with: 48%</small>
+                                                <div class="progress progress-mini">
+                                                    <div style="width: 48%;" class="progress-bar"></div>
+                                                </div>
+                                            </td>
+                                            @*<td class="project-people">
+                                                    <a href=""><img alt="image" class="img-circle" src="~/Images/a3.jpg"></a>
+                                                    <a href=""><img alt="image" class="img-circle" src="~/Images/a1.jpg"></a>
+                                                    <a href=""><img alt="image" class="img-circle" src="~/Images/a2.jpg"></a>
+                                                    <a href=""><img alt="image" class="img-circle" src="~/Images/a4.jpg"></a>
+                                                    <a href=""><img alt="image" class="img-circle" src="~/Images/a5.jpg"></a>
+                                                </td>*@
+                                            <td class="project-actions">
+                                                <a href="#" class="btn btn-success btn-sm"><i class="fa fa-folder"></i> View </a>
+                                                <a href="#" class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i> Edit </a>
+                                                <a href="#" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>

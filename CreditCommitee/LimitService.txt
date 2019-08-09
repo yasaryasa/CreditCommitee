@@ -1,0 +1,83 @@
+﻿<? xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.paymentsystem.api.cca.hmn.ykb.com/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http"
+	xmlns:ns1="http://intf.service.paymentsystem.api.cca.hmn.ykb.com/"
+	name="CcaApiPaymentSystemConsumerLimitServiceService" targetNamespace="http://service.paymentsystem.api.cca.hmn.ykb.com/">
+	<wsdl:import
+        location = "HOME_URL/Harmoni/Cca/Api/PaymentSystem/CcaApiPaymentSystemConsumerLimitService?wsdl=ICcaApiPaymentSystemConsumerLimitService.wsdl"
+
+        namespace="http://intf.service.paymentsystem.api.cca.hmn.ykb.com/">
+	</wsdl:import>
+	<wsdl:binding
+        name = "CcaApiPaymentSystemConsumerLimitServiceServiceSoapBinding" type="ns1:ICcaApiPaymentSystemConsumerLimitService">
+		<soap:binding style = "document"
+
+            transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name = "consumerLimitInquiry" >
+
+            < soap:operation soapAction = "" style="document" />
+			<wsdl:input name = "consumerLimitInquiry" >
+
+                < soap:body use = "literal" />
+ 
+             </ wsdl:input>
+			<wsdl:output name = "consumerLimitInquiryResponse" >
+
+                < soap:body use = "literal" />
+ 
+             </ wsdl:output>
+			<wsdl:fault name = "HmnServiceException" >
+
+                < soap:fault name = "HmnServiceException" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name = "disburseOverDraftLimit" >
+
+            < soap:operation soapAction = "" style="document" />
+			<wsdl:input name = "disburseOverDraftLimit" >
+
+                < soap:body use = "literal" />
+ 
+             </ wsdl:input>
+			<wsdl:output name = "disburseOverDraftLimitResponse" >
+
+                < soap:body use = "literal" />
+ 
+             </ wsdl:output>
+			<wsdl:fault name = "HmnServiceException" >
+
+                < soap:fault name = "HmnServiceException" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name = "getOverDraftList" >
+
+            < soap:operation soapAction = "" style="document" />
+			<wsdl:input name = "getOverDraftList" >
+
+                < soap:body use = "literal" />
+ 
+             </ wsdl:input>
+			<wsdl:output name = "getOverDraftListResponse" >
+
+                < soap:body use = "literal" />
+ 
+             </ wsdl:output>
+			<wsdl:fault name = "HmnServiceException" >
+
+                < soap:fault name = "HmnServiceException" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name = "CcaApiPaymentSystemConsumerLimitServiceService" >
+
+        < wsdl:port
+             binding = "tns:CcaApiPaymentSystemConsumerLimitServiceServiceSoapBinding"
+
+            name="CcaApiPaymentSystemConsumerLimitServicePort">
+			<soap:address
+                location = "HOME_URL/Harmoni/Cca/Api/PaymentSystem/CcaApiPaymentSystemConsumerLimitService" />
+
+        </ wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

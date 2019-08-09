@@ -1,0 +1,154 @@
+﻿@model IEnumerable<Commitee.Models.CommiteeItem>
+
+@{
+    ViewBag.Title = "List";
+    bool started = false;
+}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+
+    <div class="row">
+        <div class="col-lg-12">
+
+
+
+            <div class="mail-box-header">
+                @*<form method="get" action="#" class="pull-right mail-search">
+                    <div class="input-group">
+                        <input type="text" class="form-control input-sm" name="search" placeholder="Search email">
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>*@
+                <h2>
+                    Commitee Tasks
+                </h2>
+                <div class="mail-tools tooltip-demo m-t-md">
+                    <div class="btn-group pull-right">
+                        <button class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i></button>
+                        <button class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i></button>
+                    </div>
+                    <a href="@Url.Action("Create", "CommiteeItem")" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="New Case">
+                        <i class="fa fa-plus"></i>
+                        <span>
+                            <strong>New Case</strong>
+                        </span>
+                    </a>
+                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i> </button>
+                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as important"><i class="fa fa-exclamation"></i> </button>
+                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>
+                </div>
+            </div>
+            <div class="mail-box project-list">
+                <table class="table table-responsive table-mail">
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var dynamicClass = "";
+                            @*<tr @(item.itemStatus.ToString().Equals("NOT_STARTED") ? "class=danger" : String.Empty)>*@
+
+                            switch (item.itemStatus)
+                            {
+                                case Commitee.Models.CommiteeItem.ItemStatus.NOT_STARTED:
+                                    dynamicClass = "info";
+                                    break;
+                                case Commitee.Models.CommiteeItem.ItemStatus.STARTED:
+                                    dynamicClass = "warning";
+                                    started = true;
+                                    break;
+                                case Commitee.Models.CommiteeItem.ItemStatus.ENDED:
+                                    dynamicClass = "success";
+                                    break;
+                                default:
+                                    dynamicClass = "";
+                                    break;
+                            }
+
+                            <tr class="@dynamicClass">
+                                <td class="check-mail">
+                                    <input type="checkbox" class="i-checks">
+                                </td>
+                                <td class="project-title">
+                                    <a href="@Url.Action("ProjectDetail", "AppViews")">@item.itemName</a>
+                                    <br />
+                                    <small>@item.itemDate</small>
+                                </td>
+                                <td class="project-completion col-lg-2 hidden-xs">
+                                    <small>During: </small>
+                                    <div class="progress progress-mini">
+                                        <div style="width: 48%;" class="progress-bar"></div>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <div class="btn-group">
+                                        @*@{
+                                            int status = (int)item.itemStatus;
+                                            status = (status + 1) % 3;
+                                         }
+
+                                        <a href='@Url.Action("ChangeTaskStatus", "CommiteeItem", new { id = item.id, status })' class="btn btn-primary btn-sm"><i class="fa fa-play"></i> Start </a>*@        
+
+                                        @if (item.itemStatus == Commitee.Models.CommiteeItem.ItemStatus.NOT_STARTED)
+                                        {
+                                            <a href='@Url.Action("ChangeTaskStatus", "CommiteeItem", new { id = item.id, status = Commitee.Models.CommiteeItem.ItemStatus.STARTED })'  class="btn btn-primary btn-sm"><i class="fa fa-play"></i> Start </a>        
+                                        }
+                                        else if (item.itemStatus == Commitee.Models.CommiteeItem.ItemStatus.STARTED)
+                                        {
+                                            <a href='@Url.Action("ChangeTaskStatus", "CommiteeItem", new { id = item.id, status = Commitee.Models.CommiteeItem.ItemStatus.ENDED })' class="btn btn-danger btn-sm"><i class="fa fa-stop"></i> Stop </a>
+                                        }
+                                        else if (item.itemStatus == Commitee.Models.CommiteeItem.ItemStatus.ENDED)
+                                        {
+                                            <a href='#' class="btn btn-primary btn-sm disabled"><i class="fa fa-play"></i> Ended </a>
+                                        }
+                                        <div class="btn-group">
+                                            <a href="#" data-toggle="dropdown" class="btn btn-success btn-sm dropdown-toggle">
+                                                <i class="fa fa-list"></i>
+                                                <span>
+                                                    <strong>Actions</strong>
+                                                </span>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    @Html.ActionLink("Details", "Details", new { id = item.id }, new { @class = "" })
+                                                </li>
+                                                <li class="divider"></li>
+                                                <li>
+                                                    @Html.ActionLink("Edit", "Edit", new { id = item.id }, new { @class = "" })
+                                                </li>
+                                                <li class="divider"></li>
+                                                <li>
+                                                    @Html.ActionLink("Delete", "Delete", new { id = item.id }, new { @class = "" })
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+}
+@section Scripts {
+    @Scripts.Render("~/plugins/iCheck")
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+        });
+    </script>
+}
+
